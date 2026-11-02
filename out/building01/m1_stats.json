@@ -1,0 +1,74 @@
+{
+ "tris": {
+  "frame": 1083,
+  "walls": 586,
+  "slabs_broken": 24,
+  "rubble": 75
+ },
+ "total": 1768,
+ "bounds_min": [
+  -10.0,
+  -13.933538436889648,
+  0.0
+ ],
+ "bounds_max": [
+  60.0,
+  29.100000381469727,
+  44.0
+ ],
+ "avatar": [
+  [
+   "walk through ground bay 0",
+   true
+  ],
+  [
+   "walk through ground bay 1",
+   true
+  ],
+  [
+   "walk through ground bay 2",
+   true
+  ],
+  [
+   "walk through ground bay 3",
+   true
+  ],
+  [
+   "stand on ground slab (bay 1, x=24.0 y=7.0 z=0.5)",
+   true
+  ],
+  [
+   "stand on level-1 slab (bay 1, x=24.0 y=7.0 z=14.0)",
+   true
+  ],
+  [
+   "stand on level-2 slab (bay 1, x=24.0 y=7.0 z=28.0)",
+   true
+  ]
+ ],
+ "nonmanifold_edges": 0,
+ "config": {
+  "floor_h": 14.0,
+  "slab_t": 1.0,
+  "ground_slab_t": 0.5,
+  "col": 1.6,
+  "bays_x": [
+   17.0,
+   14.0,
+   14.0,
+   11.0
+  ],
+  "bays_y": [
+   14.0,
+   14.0
+  ],
+  "over_front": 0.8,
+  "over_left": 4.0,
+  "over_other": 0.3,
+  "wall_t": 0.8,
+  "top_wall_top": 44.0,
+  "corner_col_top": 39.0,
+  "room_frame_top": 38.0,
+  "stub_top": 32.5
+ }
+}
