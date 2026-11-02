@@ -1,0 +1,147 @@
+{
+ "tris": {
+  "frame": 1595,
+  "walls": 1844,
+  "slabs_broken": 306,
+  "rubble": 6430,
+  "debris": 1844,
+  "rebar": 714
+ },
+ "total": 12733,
+ "checks": {
+  "frame": {
+   "tris": 1595,
+   "dup_verts": 0,
+   "zero_area": 0,
+   "small_faces": 49,
+   "loose_verts": 0,
+   "open_edges": 253,
+   "nonmanifold_edges": 0
+  },
+  "walls": {
+   "tris": 1844,
+   "dup_verts": 0,
+   "zero_area": 0,
+   "small_faces": 23,
+   "loose_verts": 0,
+   "open_edges": 256,
+   "nonmanifold_edges": 0
+  },
+  "slabs_broken": {
+   "tris": 306,
+   "dup_verts": 0,
+   "zero_area": 0,
+   "small_faces": 0,
+   "loose_verts": 0,
+   "open_edges": 36,
+   "nonmanifold_edges": 0
+  },
+  "rubble": {
+   "tris": 6430,
+   "dup_verts": 0,
+   "zero_area": 0,
+   "small_faces": 29,
+   "loose_verts": 0,
+   "open_edges": 2608,
+   "nonmanifold_edges": 0
+  },
+  "debris": {
+   "tris": 1844,
+   "dup_verts": 0,
+   "zero_area": 0,
+   "small_faces": 43,
+   "loose_verts": 0,
+   "open_edges": 170,
+   "nonmanifold_edges": 0
+  },
+  "rebar": {
+   "tris": 714,
+   "dup_verts": 0,
+   "zero_area": 0,
+   "small_faces": 66,
+   "loose_verts": 0,
+   "open_edges": 144,
+   "nonmanifold_edges": 0
+  }
+ },
+ "hidden_faces_deleted": {
+  "frame": 208,
+  "walls": 337,
+  "slabs_broken": 38,
+  "rubble": 2123,
+  "debris": 156,
+  "rebar": 126
+ },
+ "small_face_share": 0.016492578339747113,
+ "coplanar_pairs_between_parts": 0,
+ "smallest_parallel_gap": 0.05924654006958008,
+ "bounds_min": [
+  -11.305339813232422,
+  -11.613785743713379,
+  -0.8006875514984131
+ ],
+ "bounds_max": [
+  61.347957611083984,
+  35.13930892944336,
+  45.69643020629883
+ ],
+ "avatar": [
+  [
+   "walk through ground bay 0",
+   true
+  ],
+  [
+   "walk through ground bay 1",
+   true
+  ],
+  [
+   "walk through ground bay 2",
+   true
+  ],
+  [
+   "walk through ground bay 3",
+   true
+  ],
+  [
+   "stand on ground slab (bay 1, x=24.0 y=7.0 z=0.5)",
+   true
+  ],
+  [
+   "stand on level-1 slab (bay 1, x=24.0 y=7.0 z=14.0)",
+   true
+  ],
+  [
+   "stand on level-2 slab (bay 1, x=24.0 y=7.0 z=28.0)",
+   true
+  ]
+ ],
+ "fails": [],
+ "config": {
+  "floor_h": 14.0,
+  "slab_t": 1.0,
+  "ground_slab_t": 0.5,
+  "col": 1.9,
+  "bays_x": [
+   17.0,
+   14.0,
+   14.0,
+   11.0
+  ],
+  "bays_y": [
+   14.0,
+   14.0
+  ],
+  "over_front": 0.8,
+  "over_left": 4.0,
+  "over_other": 0.3,
+  "beam_d": 2.2,
+  "beam_w": 1.4,
+  "wall_t": 0.8,
+  "top_wall_top": 44.0,
+  "top_wall_left": 4.5,
+  "corner_col_top": 39.0,
+  "room_frame_top": 38.0,
+  "stub_top": 32.5,
+  "seed": 11
+ }
+}

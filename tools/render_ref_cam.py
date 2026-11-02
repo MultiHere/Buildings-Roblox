@@ -150,7 +150,7 @@ def main():
     ap.add_argument("--tune", action="store_true")
     ap.add_argument("--res", type=int, default=900)
     ap.add_argument("--samples", type=int, default=48)
-    ap.add_argument("--sheet", default="m1_sheet.png")
+    ap.add_argument("--sheet", default="m2_sheet.png")
     a = ap.parse_args()
     bpy.ops.wm.open_mainfile(filepath=os.path.join(WORK, "building01.blend"))
     if a.tune:
@@ -164,13 +164,32 @@ def main():
         camera(sc, az, hgt, dist, a.res)
         render(sc, os.path.join(OUT, name + ".png"))
         print("rendered", name)
-    # sheet: ref | ref-cam render | sil_diff | 3/4, one row, <= 1200 px wide
+    # wireframe 3/4: view-layer material override with a 1-px Cycles wireframe over flat grey
+    wm = bpy.data.materials.new("wire")
+    wm.use_nodes = True
+    nt = wm.node_tree
+    nt.nodes.clear()
+    wf, mix, out = nt.nodes.new("ShaderNodeWireframe"), nt.nodes.new("ShaderNodeMixShader"), \
+        nt.nodes.new("ShaderNodeOutputMaterial")
+    wf.use_pixel_size, wf.inputs["Size"].default_value = True, 1.0
+    dif, ink = nt.nodes.new("ShaderNodeBsdfDiffuse"), nt.nodes.new("ShaderNodeEmission")
+    dif.inputs["Color"].default_value = (0.75, 0.75, 0.75, 1)
+    ink.inputs["Color"].default_value = (0.02, 0.02, 0.05, 1)
+    nt.links.new(wf.outputs[0], mix.inputs[0])
+    nt.links.new(dif.outputs[0], mix.inputs[1])
+    nt.links.new(ink.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], out.inputs[0])
+    sc.view_layers[0].material_override = wm
+    camera(sc, -45, 30, 140, a.res)
+    render(sc, os.path.join(OUT, "view_34_wire.png"))
+    sc.view_layers[0].material_override = None
+    print("rendered view_34_wire")
+    # sheet: ref | ref-cam render | 3/4 | wireframe 3/4, one row, <= 1200 px wide (silhouette diff saved apart)
     os.system(f"{sys.executable} {os.path.join(HERE, 'silhouette.py')} {REF} {os.path.join(OUT, 'ref_cam.png')} "
               f"--out {os.path.join(OUT, 'sil_diff.png')}")
     tiles = [("reference", REF), ("ref camera", os.path.join(OUT, "ref_cam.png")),
-             ("silhouette (red ref only, blue render only)", os.path.join(OUT, "sil_diff.png")),
-             ("3/4", os.path.join(OUT, "view_34.png"))]
-    th = 200
+             ("3/4", os.path.join(OUT, "view_34.png")), ("wireframe 3/4", os.path.join(OUT, "view_34_wire.png"))]
+    th = 300
     ims = []
     for t, p in tiles:
         im = Image.open(p).convert("RGB")
