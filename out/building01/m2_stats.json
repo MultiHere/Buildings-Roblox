@@ -1,89 +1,101 @@
 {
  "tris": {
-  "frame": 1579,
-  "walls": 1839,
-  "slabs_broken": 296,
-  "rubble": 7511,
-  "debris": 1841,
-  "rebar": 714
+  "frame": 1609,
+  "walls": 1851,
+  "slabs_broken": 307,
+  "rubble": 5675,
+  "rubble_upper": 1899,
+  "debris": 1818,
+  "rebar": 732
  },
- "total": 13780,
+ "total": 13891,
  "checks": {
   "frame": {
-   "tris": 1579,
+   "tris": 1609,
    "dup_verts": 0,
    "zero_area": 0,
    "small_faces": 49,
    "loose_verts": 0,
-   "open_edges": 265,
+   "open_edges": 227,
    "nonmanifold_edges": 0
   },
   "walls": {
-   "tris": 1839,
+   "tris": 1851,
    "dup_verts": 0,
    "zero_area": 0,
-   "small_faces": 28,
+   "small_faces": 32,
    "loose_verts": 0,
-   "open_edges": 261,
+   "open_edges": 257,
    "nonmanifold_edges": 0
   },
   "slabs_broken": {
-   "tris": 296,
+   "tris": 307,
    "dup_verts": 0,
    "zero_area": 0,
    "small_faces": 0,
    "loose_verts": 0,
-   "open_edges": 36,
+   "open_edges": 41,
    "nonmanifold_edges": 0
   },
   "rubble": {
-   "tris": 7511,
+   "tris": 5675,
    "dup_verts": 0,
    "zero_area": 0,
-   "small_faces": 28,
+   "small_faces": 9,
    "loose_verts": 0,
-   "open_edges": 3137,
+   "open_edges": 2563,
+   "nonmanifold_edges": 0
+  },
+  "rubble_upper": {
+   "tris": 1899,
+   "dup_verts": 0,
+   "zero_area": 0,
+   "small_faces": 13,
+   "loose_verts": 0,
+   "open_edges": 587,
    "nonmanifold_edges": 0
   },
   "debris": {
-   "tris": 1841,
+   "tris": 1818,
    "dup_verts": 0,
    "zero_area": 0,
-   "small_faces": 36,
+   "small_faces": 33,
    "loose_verts": 0,
-   "open_edges": 165,
+   "open_edges": 148,
    "nonmanifold_edges": 0
   },
   "rebar": {
-   "tris": 714,
+   "tris": 732,
    "dup_verts": 0,
    "zero_area": 0,
-   "small_faces": 68,
+   "small_faces": 84,
    "loose_verts": 0,
-   "open_edges": 144,
+   "open_edges": 132,
    "nonmanifold_edges": 0
   }
  },
  "hidden_faces_deleted": {
-  "frame": 233,
-  "walls": 350,
-  "slabs_broken": 48,
-  "rubble": 2772,
-  "debris": 149,
-  "rebar": 126
+  "frame": 199,
+  "walls": 341,
+  "slabs_broken": 37,
+  "rubble": 2460,
+  "rubble_upper": 791,
+  "debris": 176,
+  "rebar": 384
  },
- "small_face_share": 0.015166908563134978,
- "coplanar_pairs_between_parts": 0,
- "smallest_parallel_gap": 0.1333751678466797,
+ "small_face_share": 0.01583759268591174,
+ "coplanar_pairs_between_parts": 241,
+ "same_facing_overlaps": 0,
+ "smallest_parallel_gap": 0.049999237060546875,
  "bounds_min": [
-  -11.305339813232422,
-  -12.204702377319336,
-  -0.515795111656189
+  -12.568940162658691,
+  -11.849613189697266,
+  -0.576603889465332
  ],
  "bounds_max": [
-  61.347957611083984,
-  35.13930892944336,
-  45.84403991699219
+  61.242210388183594,
+  34.530338287353516,
+  46.051448822021484
  ],
  "avatar": [
   [

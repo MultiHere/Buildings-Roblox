@@ -2,6 +2,24 @@
 
 Now: **M3 done locally (2026-11-02, local session; owner reviewing).** No cloud chat for M3.
 
+## Quality pass (local, 2026-11-02, after the owner saw gaps)
+Final: 10 MeshParts, 13,891 tris, all checks pass on the exported file:
+- `tools/gap_check.py` (rays from outside and from eye height on every floor; first hit on a back face = a hole):
+  0 of 131,897 (the v3 the owner imported had 597). Causes fixed: hidden-face pass sampled only corners + centre
+  (now dense, 0.45 studs); rubble heaps high at their footprint edge (now taper to 0); slab-edge piles overhanging
+  chipped edges (closed bottom skin).
+- `tools/float_check.py`: 0 floating pieces of 703 (rebar ends now embedded 0.6; pile chunks lowered).
+- Same-facing coplanar overlaps (flicker): 0. Back-to-back contact pairs are allowed (one side always culled).
+- `m3_export.py` material check: every object one material with its own image files. Studio's Import 3D gave no
+  SurfaceAppearance to materials that shared images with another material, and keeps one material per MeshPart.
+- Interior faces (sky openness < 0.30) split into `frame_inner`, `walls_inner`, `slabs_broken_inner` with a darker
+  set; floor rubble split into `rubble_upper` (Default collision hulls bridged street rubble to slab-edge piles and
+  made invisible ramps).
+- Studio play test (R15, PreciseConvexDecomposition on frame*, walls*, slabs_broken*, rubble*): walk in from the
+  street to all 4 bays, walk between bays, stand on ground / L1 / L2, no rubble collision in front of the facade.
+- Silhouette IoU 0.846. Front rubble lowered at bays 1-4 so avatars fit under the L1 edge beam.
+- Generated files (textures, textured FBX/GLB) are not committed: rebuild with make_textures.py + m3_export.py.
+
 ## M3 (local, Blender 5.0 + Studio)
 - `tools/make_textures.py`: per-part 1024 tileable sets from the CC0 sources, tinted to the ref's grey-brown, grime
   (tileable value noise + vertical streaks), blobby shell pits with a lighter chipped halo (first version had star

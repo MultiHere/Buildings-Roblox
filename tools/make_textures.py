@@ -16,11 +16,15 @@ N = 1024
 
 # Reference, measured on the non-white pixels: lit concrete ~ (156,144,132), mid (101,92,83).
 PARTS = {
-    "frame": dict(src="Concrete044D", tint=(126, 119, 110), contrast=1.2, pits=70, grime=1.0, seed=1),
-    "walls": dict(src="Concrete036", tint=(121, 113, 103), contrast=1.3, pits=110, grime=1.2, seed=2),
-    "slabs_broken": dict(src="Concrete044D", tint=(118, 111, 102), contrast=1.2, pits=40, grime=1.0, seed=3),
+    "frame": dict(src="Concrete044D", tint=(126, 119, 110), contrast=1.2, pits=70, grime=1.0, seed=1, shade=0.52),
+    "walls": dict(src="Concrete036", tint=(121, 113, 103), contrast=1.3, pits=110, grime=1.2, seed=2, shade=0.5),
+    "slabs_broken": dict(src="Concrete044D", tint=(118, 111, 102), contrast=1.2, pits=40, grime=1.0, seed=3, shade=0.52),
     "debris": dict(src="Concrete036", tint=(116, 109, 100), contrast=1.2, pits=15, grime=0.6, seed=4),
-    "rubble": dict(src="Ground108", tint=(113, 105, 95), contrast=0.5, desat=0.85, squash=0.10, pits=0, grime=0.8, seed=5),
+    "rubble": dict(src="Ground108", tint=(113, 105, 95), contrast=0.5, desat=0.85, squash=0.10, pits=0, grime=0.8, seed=5,
+                   mix=("Concrete036", 0.6, 1.2)),
+    # own file copies of the rubble set (one material per MeshPart, never sharing images: Import 3D rule)
+    "rubble_upper": dict(src="Ground108", tint=(113, 105, 95), contrast=0.5, desat=0.85, squash=0.10, pits=0, grime=0.8,
+                         seed=5, mix=("Concrete036", 0.6, 1.2)),
     "rebar": dict(src="Metal041B", tint=(92, 58, 38), contrast=1.6, desat=0.2, pits=0, seed=6, metal=0.55),
 }
 
@@ -122,7 +126,13 @@ def main():
         if c.get("squash"):  # compress bright pebbles: they glittered in Studio's light
             m = np.array(c["tint"], np.float32) / 255.0
             col = m + np.tanh((col - m) / c["squash"]) * c["squash"]
+        if c.get("mix"):  # concrete-led blend: chunks read as broken concrete, gravel stays in the gaps
+            src2, w, con2 = c["mix"]
+            col = col * (1 - w) + tint(load(src2, "Color"), c["tint"], con2, 0.35) * w
         nrm = load(c["src"], "NormalGL") * 2 - 1
+        if c.get("mix"):
+            nrm = nrm * (1 - c["mix"][1]) + (load(c["mix"][0], "NormalGL") * 2 - 1) * c["mix"][1]
+            nrm /= np.linalg.norm(nrm, axis=-1, keepdims=True)
         rough = load(c["src"], "Roughness")
         ao = load(c["src"], "AmbientOcclusion")
         if ao is not None:
@@ -138,6 +148,13 @@ def main():
             nrm = blend_normals(nrm, normal_from_height(h, 6.0))
             rough = np.clip(rough + 0.08 * depth + 0.05 * halo, 0, 1)
         save(col, f"{part}_color.png", "RGB")
+        if c.get("shade"):  # interior faces (ceilings, back walls): darker, sootier, flatter
+            lum = (col @ np.array([0.299, 0.587, 0.114], np.float32))[..., None]
+            save((col * 0.8 + lum * 0.2) * c["shade"], f"{part}_inner_color.png", "RGB")
+            # own copies: Studio's Import 3D gave no SurfaceAppearance to a material whose images another
+            # material already used (2026-11-02), so every part's material has its own files
+            save(nrm * 0.5 + 0.5, f"{part}_inner_normal.png", "RGB")
+            save(np.clip(rough * 0.9 + 0.1, 0, 1), f"{part}_inner_roughness.png", "L")
         save(nrm * 0.5 + 0.5, f"{part}_normal.png", "RGB")
         save(np.clip(rough * 0.9 + 0.1, 0, 1), f"{part}_roughness.png", "L")
         if "metal" in c:

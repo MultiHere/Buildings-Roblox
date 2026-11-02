@@ -53,9 +53,9 @@ C = dict(
     stub_top=32.5,           # far-right wall stub
     seed=11,
 )
-PARTS = ["frame", "walls", "slabs_broken", "rubble", "debris", "rebar"]
-GREY = {"frame": 0.50, "walls": 0.58, "slabs_broken": 0.45, "rubble": 0.40, "debris": 0.47, "rebar": 0.22}
-BUDGET = {"frame": 7000, "walls": 7000, "slabs_broken": 3000, "rubble": 9000, "debris": 3000, "rebar": 1000}
+PARTS = ["frame", "walls", "slabs_broken", "rubble", "rubble_upper", "debris", "rebar"]
+GREY = {"frame": 0.50, "walls": 0.58, "slabs_broken": 0.45, "rubble": 0.40, "rubble_upper": 0.40, "debris": 0.47, "rebar": 0.22}
+BUDGET = {"frame": 7000, "walls": 7000, "slabs_broken": 3000, "rubble": 7500, "rubble_upper": 2500, "debris": 3000, "rebar": 1000}
 
 c = C
 rng = np.random.default_rng(c["seed"])
@@ -504,8 +504,10 @@ def build_slabs_broken():
 
 
 # ---------------------------------------------------------------- rubble + debris
-def mound(part, x0, x1, y0, y1, hfun, sp, z0=0.0, cut0=0.4):
-    """low-poly rubble heap: jittered grid + Delaunay, height hfun(x,y) (+-lumps), open bottom on the support"""
+def mound(part, x0, x1, y0, y1, hfun, sp, z0=0.0, cut0=0.4, taper=1.2, bottom=False):
+    """low-poly rubble heap: jittered grid + Delaunay, height hfun(x,y) (+-lumps), open bottom on the support.
+    Heights taper to 0 within `taper` studs of the footprint edge: a heap still high at its edge is an open wall you
+    can look into (gap check, 2026-11-02)."""
     gx, gy = np.arange(x0, x1 + 1e-6, sp), np.arange(y0, y1 + 1e-6, sp * 0.866)
     P = []
     for j, y in enumerate(gy):
@@ -513,6 +515,8 @@ def mound(part, x0, x1, y0, y1, hfun, sp, z0=0.0, cut0=0.4):
             P.append((x + rng.uniform(-0.25, 0.25) * sp, y + rng.uniform(-0.25, 0.25) * sp))
     P = np.array(P)
     H = np.array([hfun(x, y) for x, y in P])
+    edge = np.minimum.reduce([P[:, 0] - x0, x1 - P[:, 0], P[:, 1] - y0, y1 - P[:, 1]])
+    H = H * np.clip(edge / taper, 0, 1)
     H = np.where(H > cut0, H * rng.uniform(0.82, 1.18, len(H)), 0.0)
     tri = Delaunay(P).simplices
     tri = tri[(H[tri] > 0).any(1)]
@@ -524,6 +528,11 @@ def mound(part, x0, x1, y0, y1, hfun, sp, z0=0.0, cut0=0.4):
     for t in remap[tri]:
         a, b, cc = V[t]
         F.append(list(t) if np.cross(b - a, cc - a)[2] > 0 else list(t[::-1]))
+    if bottom:  # downward skin 0.05 under the support: buried in the slab (deleted) except where the pile overhangs
+        nv = len(V)
+        flat = V[:, 2] - z0 < 1e-6  # edge vertices: skin meets the top there, so the heap is closed all round
+        V = np.vstack([V, np.c_[V[:, :2], np.where(flat, V[:, 2], z0 - 0.05)]])
+        F += [[i + nv for i in f[::-1]] for f in F]
     SOLIDS.append(Solid(part, V, F))
     return hfun
 
@@ -550,14 +559,15 @@ def heap(d_out, d_in, hx, w_in=6.0, k=1.0):
 
 
 def build_rubble():
-    FX, FHh = [-10, -7, -2, 6, 16, 30, 44, W + 1, W + 4], [0.0, 6.4, 7.8, 7.2, 5.6, 4.6, 4.8, 5.0, 0.0]
-    front = mound("rubble", -11, W + 5, -10, 6, lambda x, y: heap(-2.5 - y, 0, ridge(x, FX, FHh)), 1.5)
-    LY, LH = [-8, -2, 8, 20, D + 2, D + 7], [4.6, 5.4, 4.0, 2.6, 1.6, 0.0]
-    left = mound("rubble", -11, 4, -8, D + 7, lambda x, y: heap(-5.0 - x, 0, ridge(y, LY, LH), 8.0, 0.8), 1.6)
+    FX, FHh = [-10, -7, -2, 6, 16, 30, 44, W + 1, W + 4], [0.0, 6.4, 7.6, 5.4, 3.6, 3.1, 3.2, 3.6, 0.0]
+    # bays 1-4 stay enterable: an avatar needs ~7 studs under the L1 edge beam (play test, 2026-11-02)
+    front = mound("rubble", -11, W + 5, -12, 6, lambda x, y: heap(-2.5 - y, 0, ridge(x, FX, FHh)), 1.5)
+    LY, LH = [-10, -6, -2, 8, 20, D + 2, D + 7], [0.0, 6.4, 7.4, 5.4, 3.4, 2.0, 0.0]
+    left = mound("rubble", -13, 4, -10, D + 7, lambda x, y: heap(-5.0 - x, 0, ridge(y, LY, LH), 8.0, 0.8), 1.6)
     RY, RH = [-6, 0, 14, D + 2, D + 6], [0.0, 2.8, 2.2, 1.6, 0.0]
     mound("rubble", W - 4, W + 6, -6, D + 6, lambda x, y: heap(x - (W + 1.2), 0, ridge(y, RY, RH)), 1.8)
     BX, BH = [-4, 0, 30, W, W + 4], [0.0, 1.6, 1.2, 1.4, 0.0]
-    mound("rubble", -6, W + 6, D - 4, D + 7, lambda x, y: heap(y - (D + 1.5), 0, ridge(x, BX, BH)), 2.2)
+    mound("rubble", -6, W + 6, D - 6, D + 7, lambda x, y: heap(y - (D + 1.5), 0, ridge(x, BX, BH)), 2.2)
     # heap under the hanging slab inside the ground-floor left bay
     inner = mound("rubble", 1.2, 16, 1.2, 13, lambda x, y: G + 2.8 * max(0, 1 - math.hypot(x - 9, y - 9.5) / 6.0)
                   - G, 1.3, z0=G)
@@ -567,11 +577,11 @@ def build_rubble():
         xr = (XLB + 0.6, W + h - 0.3)
         ffun = (lambda zt_: lambda x, y: (0.7 + 0.8 * abs(math.sin(x * 0.37 + zt_))) *
                 max(0, 1 - abs(y - (YF + 1.6)) / 1.5))(zt)
-        mound("rubble", xr[0], xr[1], YF + 0.05, YF + 3.2, ffun, 1.2, z0=zt, cut0=0.3)
+        mound("rubble_upper", xr[0], xr[1], YF + 0.05, YF + 3.2, ffun, 1.2, z0=zt, cut0=0.3, bottom=True)
         ybk = YL[1] if zt == L2 else D
         lfun = (lambda zt_: lambda x, y: (0.6 + 0.7 * abs(math.sin(y * 0.41 + zt_))) *
                 max(0, 1 - abs(x - (XLB + 1.7)) / 1.6))(zt)
-        mound("rubble", XLB + 0.05, -h + 0.2, YF + 2.5, ybk - 1.0, lfun, 1.2, z0=zt, cut0=0.3)
+        mound("rubble_upper", XLB + 0.05, -h + 0.2, YF + 2.5, ybk - 1.0, lfun, 1.2, z0=zt, cut0=0.3, bottom=True)
         piles.append((zt, ffun, lfun, ybk))
     # chunks on the mounds (rubble part)
     n = 0
@@ -595,14 +605,14 @@ def build_rubble():
                 continue
             y = YF + rng.uniform(-0.2, 2.4)
             s = rng.uniform(0.8, 1.6)
-            chunk("rubble", (x + rng.uniform(-0.5, 0.5), y, zt + ffun(x, max(y, YF)) - 0.1 * s + 0.2),
+            chunk("rubble_upper", (x + rng.uniform(-0.5, 0.5), y, zt + ffun(x, max(y, YF)) - 0.1 * s + 0.05),
                   (s, s * 0.8, s * 0.6))
         for y in np.arange(YF + 3, ybk - 1, 1.5):
             if rng.random() < 0.3:
                 continue
             x = XLB + rng.uniform(-0.2, 2.2)
             s = rng.uniform(0.8, 1.5)
-            chunk("rubble", (x, y, zt + lfun(max(x, XLB), y) - 0.1 * s + 0.2), (s, s * 0.8, s * 0.6))
+            chunk("rubble_upper", (x, y, zt + lfun(max(x, XLB), y) - 0.1 * s + 0.05), (s, s * 0.8, s * 0.6))
 
 
 def build_debris():
@@ -642,9 +652,12 @@ def build_debris():
 
 
 # ---------------------------------------------------------------- rebar
-def bar(pts, r=0.1, sides=4):
+def bar(pts, r=0.1, sides=4, embed=0.6):
+    """pts[0] is the end held by the concrete: it is pushed `embed` studs back inside, since chip cuts can take the
+    concrete back after the bar is placed (float check found bars ending 0.3-0.4 short, 2026-11-02)"""
     bm = bmesh.new()
     P = [Vector(p) for p in pts]
+    P.insert(0, P[0] - (P[1] - P[0]).normalized() * embed)
     rings, s = [], None
     for i, p in enumerate(P):
         if i == 0:
@@ -732,6 +745,20 @@ def inside(s, p):
     return sum(parity(s, p, r) for r in RAYS) >= 2
 
 
+def dense_samples(P, cen, nn, step=0.45):
+    """points on the face every ~step studs (fan triangles from the centre), pulled 0.04 inward, 0.02 off the face"""
+    pts = []
+    for a, b in zip(P, np.roll(P, -1, 0)):
+        k = max(1, int(math.ceil(max(np.linalg.norm(a - cen), np.linalg.norm(b - cen), np.linalg.norm(b - a)) / step)))
+        for u in range(k + 1):
+            for v in range(k + 1 - u):
+                pts.append(cen + (a - cen) * (u / k) + (b - cen) * (v / k))
+    pts = np.array(pts)
+    dv = cen - pts
+    dl = np.linalg.norm(dv, axis=1, keepdims=True)
+    return pts + dv * np.minimum(1, 0.04 / np.maximum(dl, 1e-9)) + nn * 0.02
+
+
 def hidden_pass():
     occ = [s for s in SOLIDS if s.occ]
     LO = np.array([s.lo for s in occ])
@@ -762,6 +789,14 @@ def hidden_pass():
                 if not any(occ[k] is not s and inside(occ[k], p) for k in cand):
                     hid = False
                     break
+            if hid:  # corners + centre covered: confirm on a dense grid, a chip cut can expose the middle (gaps, 2026-11-02)
+                for p in dense_samples(P, cen, nn):
+                    if p[2] < 0:
+                        continue
+                    cand = np.nonzero((p >= LO).all(1) & (p <= HI).all(1))[0]
+                    if not any(occ[k] is not s and inside(occ[k], p) for k in cand):
+                        hid = False
+                        break
             if hid:
                 dropped[s.part] += 1
             else:
@@ -840,8 +875,10 @@ def layer_gaps(obs):
             P = np.array([ob.data.vertices[i].co[:] for i in p.vertices])
             o = [k for k in range(3) if k != ax]
             recs.setdefault(ax, []).append((name, P[0, ax], P[:, o[0]].min(), P[:, o[0]].max(), P[:, o[1]].min(),
-                                           P[:, o[1]].max()))
+                                           P[:, o[1]].max(), float(np.sign(n[ax]))))
     coplanar, gap = 0, 99.0
+    global SAME_DIR
+    SAME_DIR = []
     for ax, R in recs.items():
         names = np.array([r[0] for r in R])
         A = np.array([r[1:] for r in R], float)
@@ -851,6 +888,9 @@ def layer_gaps(obs):
                  (np.minimum(A[m, 4], A[i, 4]) - np.maximum(A[m, 3], A[i, 3]) > 0.05)
             d = np.abs(A[m, 0] - A[i, 0])[ov]
             coplanar += int((d < 0.01).sum())
+            same = (np.abs(A[m, 0] - A[i, 0]) < 0.01) & ov & (A[m, 5] == A[i, 5])
+            for k in np.nonzero(same)[0]:  # same facing + same plane + overlap = z-fighting (opposite = back to back)
+                SAME_DIR.append((names[i], names[m][k], ax, round(A[i, 0], 2), round(A[i, 1], 1), round(A[i, 3], 1)))
             if (d >= 0.01).any():
                 gap = min(gap, float(d[d >= 0.01].min()))
     return coplanar // 2, gap
@@ -888,6 +928,7 @@ def main():
     allA = np.concatenate([[p.area for p in o.data.polygons] for o in obs.values()])
     small_share = float((allA < 0.05).mean())
     coplanar, gap = layer_gaps(obs)
+    print(f"  same-facing coplanar overlaps (flicker): {len(SAME_DIR) // 2}", SAME_DIR[:8])
     lo = Vector((1e9,) * 3)
     hi = Vector((-1e9,) * 3)
     for o in obs.values():
@@ -928,10 +969,10 @@ def main():
             fails.append(f"{k} dup/zero/loose")
     if small_share >= 0.10:
         fails.append("small-face share >= 10%")
-    if coplanar:
-        fails.append(f"{coplanar} coplanar face pairs between parts")
+    if SAME_DIR:  # back-to-back contact faces (opposite facing) cannot flicker: one side is always culled
+        fails.append(f"{len(SAME_DIR) // 2} same-facing coplanar overlaps between parts (z-fighting)")
     stats = dict(tris=tris, total=total, checks=chk, hidden_faces_deleted=dropped, small_face_share=small_share,
-                 coplanar_pairs_between_parts=coplanar, smallest_parallel_gap=gap, bounds_min=list(lo),
+                 coplanar_pairs_between_parts=coplanar, same_facing_overlaps=len(SAME_DIR) // 2, smallest_parallel_gap=gap, bounds_min=list(lo),
                  bounds_max=list(hi), avatar=av, fails=fails, config=C)
     with open(os.path.join(OUT, "m2_stats.json"), "w") as f:
         json.dump(stats, f, indent=1)
