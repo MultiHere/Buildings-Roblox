@@ -1,34 +1,34 @@
 {
  "tris": {
-  "frame": 1595,
-  "walls": 1844,
-  "slabs_broken": 306,
-  "rubble": 6430,
-  "debris": 1844,
+  "frame": 1579,
+  "walls": 1839,
+  "slabs_broken": 296,
+  "rubble": 7511,
+  "debris": 1841,
   "rebar": 714
  },
- "total": 12733,
+ "total": 13780,
  "checks": {
   "frame": {
-   "tris": 1595,
+   "tris": 1579,
    "dup_verts": 0,
    "zero_area": 0,
    "small_faces": 49,
    "loose_verts": 0,
-   "open_edges": 253,
+   "open_edges": 265,
    "nonmanifold_edges": 0
   },
   "walls": {
-   "tris": 1844,
+   "tris": 1839,
    "dup_verts": 0,
    "zero_area": 0,
-   "small_faces": 23,
+   "small_faces": 28,
    "loose_verts": 0,
-   "open_edges": 256,
+   "open_edges": 261,
    "nonmanifold_edges": 0
   },
   "slabs_broken": {
-   "tris": 306,
+   "tris": 296,
    "dup_verts": 0,
    "zero_area": 0,
    "small_faces": 0,
@@ -37,53 +37,53 @@
    "nonmanifold_edges": 0
   },
   "rubble": {
-   "tris": 6430,
+   "tris": 7511,
    "dup_verts": 0,
    "zero_area": 0,
-   "small_faces": 29,
+   "small_faces": 28,
    "loose_verts": 0,
-   "open_edges": 2608,
+   "open_edges": 3137,
    "nonmanifold_edges": 0
   },
   "debris": {
-   "tris": 1844,
+   "tris": 1841,
    "dup_verts": 0,
    "zero_area": 0,
-   "small_faces": 43,
+   "small_faces": 36,
    "loose_verts": 0,
-   "open_edges": 170,
+   "open_edges": 165,
    "nonmanifold_edges": 0
   },
   "rebar": {
    "tris": 714,
    "dup_verts": 0,
    "zero_area": 0,
-   "small_faces": 66,
+   "small_faces": 68,
    "loose_verts": 0,
    "open_edges": 144,
    "nonmanifold_edges": 0
   }
  },
  "hidden_faces_deleted": {
-  "frame": 208,
-  "walls": 337,
-  "slabs_broken": 38,
-  "rubble": 2123,
-  "debris": 156,
+  "frame": 233,
+  "walls": 350,
+  "slabs_broken": 48,
+  "rubble": 2772,
+  "debris": 149,
   "rebar": 126
  },
- "small_face_share": 0.016492578339747113,
+ "small_face_share": 0.015166908563134978,
  "coplanar_pairs_between_parts": 0,
- "smallest_parallel_gap": 0.05924654006958008,
+ "smallest_parallel_gap": 0.1333751678466797,
  "bounds_min": [
   -11.305339813232422,
-  -11.613785743713379,
-  -0.8006875514984131
+  -12.204702377319336,
+  -0.515795111656189
  ],
  "bounds_max": [
   61.347957611083984,
   35.13930892944336,
-  45.69643020629883
+  45.84403991699219
  ],
  "avatar": [
   [

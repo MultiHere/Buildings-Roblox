@@ -550,7 +550,7 @@ def heap(d_out, d_in, hx, w_in=6.0, k=1.0):
 
 
 def build_rubble():
-    FX, FHh = [-10, -7, -2, 6, 16, 30, 44, W + 1, W + 4], [0.0, 4.6, 5.6, 5.2, 3.9, 3.4, 3.5, 3.7, 0.0]
+    FX, FHh = [-10, -7, -2, 6, 16, 30, 44, W + 1, W + 4], [0.0, 6.4, 7.8, 7.2, 5.6, 4.6, 4.8, 5.0, 0.0]
     front = mound("rubble", -11, W + 5, -10, 6, lambda x, y: heap(-2.5 - y, 0, ridge(x, FX, FHh)), 1.5)
     LY, LH = [-8, -2, 8, 20, D + 2, D + 7], [4.6, 5.4, 4.0, 2.6, 1.6, 0.0]
     left = mound("rubble", -11, 4, -8, D + 7, lambda x, y: heap(-5.0 - x, 0, ridge(y, LY, LH), 8.0, 0.8), 1.6)
@@ -576,7 +576,7 @@ def build_rubble():
     # chunks on the mounds (rubble part)
     n = 0
     for _ in range(4000):
-        if n >= 330:
+        if n >= 430:
             break
         x, y = rng.uniform(-10, W + 4), rng.uniform(-10, D + 5)
         hh = max(front(x, y), left(x, y))

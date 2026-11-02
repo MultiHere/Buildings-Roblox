@@ -5,16 +5,14 @@ ordered 10 realistic low-poly buildings; this repo makes them one at a time. You
 Claude session with Roblox Studio imports and reviews every milestone; the owner decides. Read `BRIEF.md` (what to
 make), `docs/MILESTONES.md` (order, time boxes, done-checks), then `docs/STATUS.md` (where we are).
 
-## 1. Asking (hard rules)
-- **Never stop without asking.** Every turn ends with **AskUserQuestion** (recommendation first). A Stop hook blocks
-  any other ending once.
-- After a milestone: commit, push to `main` (check with `git ls-remote --heads origin`; if the session forces a
-  `claude/...` branch, say its exact name in STATUS and in the question), update `docs/STATUS.md`, then
-  AskUserQuestion: "M<n> is pushed, ready for review" with options "Wait for review (Recommended)" / "Stop here".
-  Never start the next milestone before the reviewer answers.
-- A check that fails **3 times**, a tool that will not install after 3 tries, or a milestone past its time box: push
-  what is there, write the problem in `docs/STATUS.md`, and ask. Never loop on it.
-- Ask only about real decisions. Defaults you can pick yourself: pick them and write them in STATUS.
+## 1. Finishing and asking (owner, 2026-11-02)
+- **When the milestone is done: commit, push to `main`, update `docs/STATUS.md`, then STOP.** Do not end with a
+  question: an answer would only restart the chat and spend tokens. The local reviewer reads STATUS from the repo.
+  (Check with `git ls-remote --heads origin`; if the session forces a `claude/...` branch, name it in STATUS.)
+- Never start the next milestone yourself.
+- Use AskUserQuestion only when you are truly blocked mid-milestone (a check failing 3 times, a tool that will not
+  install after 3 tries, the time box passed): push what is there, write the problem in STATUS, ask once.
+- Defaults you can pick yourself: pick them and write them in STATUS.
 
 ## 2. Spend (limited credit)
 - Model is set in `.claude/settings.json`; do not switch. `.claude/hooks/budget.py` estimates spend from the

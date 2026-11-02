@@ -1,5 +1,23 @@
 # Status
 
+Now: **M3 done locally (2026-11-02, local session; owner reviewing).** No cloud chat for M3.
+
+## M3 (local, Blender 5.0 + Studio)
+- `tools/make_textures.py`: per-part 1024 tileable sets from the CC0 sources, tinted to the ref's grey-brown, grime
+  (tileable value noise + vertical streaks), blobby shell pits with a lighter chipped halo (first version had star
+  pits: high-harmonic outline), rubble pebbles compressed (they glittered in Studio).
+- `tools/m3_export.py`: imports the M2 GLB, world-scale box UVs (10 studs per repeat on concrete, 14 rubble, 6 debris,
+  2 rebar = 102 / 73 / 171 / 512 px per stud), PBR materials, `building01_textured.fbx` (textures embedded) + `.glb`,
+  previews `prev_ref/prev_34/prev_close.png`.
+- Rubble raised to match the ref (front ridge 5.6 -> 7.8, left 5.4 -> 7.4, chunks 330 -> 430). Built locally with
+  `blender -b --python pipeline/blrun.py -- tools/build_building01.py` (scipy in `.vendor311`, not committed).
+- Tris now: frame 1,579 - walls 1,839 - slabs_broken 296 - rubble 7,511 - debris 1,841 - rebar 714 = **13,780**.
+- Studio Import 3D (default settings): 6 MeshParts, SurfaceAppearance with colour/normal/roughness (+ metalness on
+  rebar), bbox 72.7 x 46.4 x 47.3 studs = same as Blender, so the FBX factor is right. Lands off-centre: move it with
+  PivotTo. Imported unanchored with Default collision; CollisionFidelity cannot be set from a script (do it by hand:
+  frame/walls/slabs_broken PreciseConvexDecomposition, rubble Default, debris/rebar CanCollide off).
+
+
 Now: **M2 pushed, waiting for review.** Pushed to `main` and to the session branch `claude/ecstatic-gates-7zy3q8`
 (same commit). Do not start M3 before the review.
 

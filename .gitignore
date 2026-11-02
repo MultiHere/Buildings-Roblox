@@ -1,3 +1,7 @@
 __pycache__/
 *.blend1
 .vendor311/
+.vendor311/
+out/building01/*_textured.*
+out/building01/m3_sheet_v*.png
+out/building01/textures/

@@ -1,0 +1,81 @@
+{
+ "frame": {
+  "tris": 1579,
+  "studs_per_repeat": 10.0,
+  "px_per_stud": 102.4,
+  "bounds": [
+   -4.95,
+   -1.75,
+   0.0,
+   57.25,
+   29.25,
+   38.0
+  ]
+ },
+ "walls": {
+  "tris": 1839,
+  "studs_per_repeat": 10.0,
+  "px_per_stud": 102.4,
+  "bounds": [
+   -0.4,
+   -0.4,
+   0.5,
+   56.4,
+   28.4,
+   43.84
+  ]
+ },
+ "slabs_broken": {
+  "tris": 296,
+  "studs_per_repeat": 10.0,
+  "px_per_stud": 102.4,
+  "bounds": [
+   -5.07,
+   -1.37,
+   0.01,
+   15.68,
+   17.0,
+   27.9
+  ]
+ },
+ "rubble": {
+  "tris": 7511,
+  "studs_per_repeat": 14.0,
+  "px_per_stud": 73.1,
+  "bounds": [
+   -11.31,
+   -10.62,
+   -0.52,
+   61.35,
+   35.14,
+   29.94
+  ]
+ },
+ "debris": {
+  "tris": 1841,
+  "studs_per_repeat": 6.0,
+  "px_per_stud": 170.7,
+  "bounds": [
+   -5.44,
+   -12.2,
+   -0.38,
+   59.13,
+   26.93,
+   29.14
+  ]
+ },
+ "rebar": {
+  "tris": 714,
+  "studs_per_repeat": 2.0,
+  "px_per_stud": 512.0,
+  "bounds": [
+   -5.4,
+   -3.35,
+   5.69,
+   56.72,
+   28.68,
+   45.84
+  ]
+ },
+ "total_tris": 13780
+}
